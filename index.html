@@ -4,7 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sliding Tile Puzzle</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Sans+Thai:wght@500;700&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
+    :root {
+      --ink: #0b0a18;
+      --bg: #191048;
+      --bg-dither: rgba(255, 255, 255, 0.035);
+
+      --panel: #3b2f8f;
+      --panel-hi: #6a5cd4;
+      --panel-lo: #221a5c;
+
+      --hud: #14103a;
+      --hud-hi: rgba(255, 255, 255, 0.09);
+      --hud-lo: rgba(0, 0, 0, 0.55);
+
+      --board: #100c30;
+      --hole: #0a0820;
+      --hole-hi: #211c52;
+      --hole-lo: #040310;
+
+      --tile: #f5b73d;
+      --tile-hover: #ffc95f;
+      --tile-glow: #ffd97a;
+      --tile-hi: #ffe2a8;
+      --tile-lo: #9c560a;
+
+      --green: #4ad14a;
+      --green-hi: #a8f0a0;
+      --green-lo: #1c7a2a;
+
+      --slate: #6d6aa8;
+      --slate-hi: #a9a6d8;
+      --slate-lo: #363463;
+
+      --yellow: #ffd93d;
+      --muted: #a9a4dd;
+      --lift: 6px;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -12,36 +57,76 @@
     body {
       min-height: 100vh;
       margin: 0;
-      padding: 24px;
+      padding: 28px 20px 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
       color: #ffffff;
-      background:
-        radial-gradient(circle at top, #334155 0%, transparent 45%),
-        linear-gradient(135deg, #0f172a, #1e293b);
+      font-family: "Press Start 2P", "IBM Plex Sans Thai", monospace;
+      line-height: 1.9;
+      background-color: var(--bg);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          var(--bg-dither) 0 4px,
+          transparent 4px 8px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          var(--bg-dither) 0 4px,
+          transparent 4px 8px
+        );
+    }
+
+    /* เส้นสแกนจอ CRT */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.16) 0 2px,
+        transparent 2px 4px
+      );
     }
 
     .game-container {
-      width: min(100%, 460px);
-      padding: 28px;
+      width: min(100%, 470px);
+      padding: 22px 20px 26px;
       text-align: center;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(12px);
+      background: var(--panel);
+      border: 6px solid var(--ink);
+      box-shadow:
+        inset 6px 6px 0 var(--panel-hi),
+        inset -6px -6px 0 var(--panel-lo),
+        0 14px 0 var(--panel-lo),
+        0 14px 0 6px var(--ink);
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: clamp(26px, 7vw, 38px);
+      margin: 6px 0 14px;
+      color: var(--yellow);
+      font-size: clamp(15px, 5vw, 24px);
+      line-height: 1.5;
+      letter-spacing: 1px;
+      text-shadow:
+        3px 0 var(--ink),
+        -3px 0 var(--ink),
+        0 -3px var(--ink),
+        3px 3px var(--ink),
+        -3px 3px var(--ink),
+        0 6px 0 #c47a00,
+        0 9px 0 var(--ink);
     }
 
     .subtitle {
-      margin: 0 0 22px;
-      color: #94a3b8;
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .status {
@@ -52,125 +137,248 @@
     }
 
     .status-box {
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.07);
-      border-radius: 14px;
+      padding: 10px 8px 12px;
+      background: var(--hud);
+      border: 4px solid var(--ink);
+      box-shadow:
+        inset 4px 4px 0 var(--hud-lo),
+        inset -4px -4px 0 var(--hud-hi);
     }
 
     .status-label {
       display: block;
-      margin-bottom: 3px;
-      color: #94a3b8;
-      font-size: 13px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
     }
 
     .status-value {
-      font-size: 22px;
-      font-weight: 800;
+      display: block;
+      color: var(--yellow);
+      font-size: clamp(15px, 4.6vw, 20px);
+      line-height: 1.2;
+      text-shadow: 0 3px 0 var(--ink);
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 10px;
       width: 100%;
-      padding: 10px;
-      background: #020617;
-      border-radius: 18px;
+      padding: 12px;
       aspect-ratio: 1;
+      background: var(--board);
+      border: 5px solid var(--ink);
+      box-shadow:
+        inset 5px 5px 0 rgba(0, 0, 0, 0.6),
+        inset -5px -5px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .board.solved {
+      animation: frameFlash 0.5s steps(1, end) 6;
     }
 
     .tile {
-      border: 0;
-      border-radius: 13px;
+      padding: 0;
       color: #ffffff;
-      background: linear-gradient(145deg, #38bdf8, #2563eb);
+      background: var(--tile);
+      border: 4px solid var(--ink);
+      border-radius: 0;
       box-shadow:
-        inset 0 -4px 0 rgba(0, 0, 0, 0.18),
-        0 5px 10px rgba(0, 0, 0, 0.22);
-      font: inherit;
-      font-size: clamp(22px, 7vw, 36px);
-      font-weight: 900;
+        inset 5px 5px 0 var(--tile-hi),
+        inset -5px -5px 0 var(--tile-lo),
+        0 var(--lift) 0 var(--tile-lo),
+        0 var(--lift) 0 4px var(--ink);
+      font-family: inherit;
+      font-size: clamp(13px, 4.2vw, 22px);
+      line-height: 1;
+      text-shadow: 0 3px 0 var(--tile-lo);
       cursor: pointer;
-      transition:
-        transform 0.12s ease,
-        filter 0.12s ease;
       user-select: none;
       touch-action: manipulation;
     }
 
     .tile:hover {
-      filter: brightness(1.12);
+      background: var(--tile-hover);
     }
 
+    /* กดแล้วบล็อกจมลงไปจริง */
     .tile:active {
-      transform: scale(0.94);
+      transform: translateY(var(--lift));
+      box-shadow:
+        inset 5px 5px 0 var(--tile-hi),
+        inset -5px -5px 0 var(--tile-lo);
+    }
+
+    .tile:focus-visible {
+      outline: 4px solid #ffffff;
+      outline-offset: 3px;
     }
 
     .tile.movable {
-      outline: 2px solid rgba(125, 211, 252, 0.7);
-      outline-offset: -4px;
+      animation: tileBlink 0.9s steps(1, end) infinite;
     }
 
+    /* ช่องว่าง = หลุมจมลงในกระดาน */
     .tile.empty {
-      visibility: hidden;
       pointer-events: none;
+      background: var(--hole);
+      box-shadow:
+        inset 5px 5px 0 var(--hole-lo),
+        inset -5px -5px 0 var(--hole-hi);
+      animation: none;
     }
 
     .controls {
       display: flex;
       gap: 12px;
-      margin-top: 18px;
+      margin-top: 22px;
     }
 
     .control-button {
       flex: 1;
-      padding: 13px 16px;
-      border: 0;
-      border-radius: 13px;
+      padding: 12px 8px 14px;
       color: #ffffff;
-      background: #22c55e;
-      font: inherit;
-      font-weight: 800;
+      background: var(--green);
+      border: 4px solid var(--ink);
+      border-radius: 0;
+      box-shadow:
+        inset 4px 4px 0 var(--green-hi),
+        inset -4px -4px 0 var(--green-lo),
+        0 var(--lift) 0 var(--green-lo),
+        0 var(--lift) 0 4px var(--ink);
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      text-shadow: 0 2px 0 var(--green-lo);
       cursor: pointer;
-      transition: transform 0.15s, filter 0.15s;
     }
 
     .control-button.secondary {
-      background: #475569;
+      background: var(--slate);
+      box-shadow:
+        inset 4px 4px 0 var(--slate-hi),
+        inset -4px -4px 0 var(--slate-lo),
+        0 var(--lift) 0 var(--slate-lo),
+        0 var(--lift) 0 4px var(--ink);
+      text-shadow: 0 2px 0 var(--slate-lo);
     }
 
     .control-button:hover {
-      filter: brightness(1.1);
-      transform: translateY(-2px);
+      filter: brightness(1.12);
+    }
+
+    .control-button:active {
+      transform: translateY(var(--lift));
+      box-shadow:
+        inset 4px 4px 0 var(--green-hi),
+        inset -4px -4px 0 var(--green-lo);
+    }
+
+    .control-button.secondary:active {
+      box-shadow:
+        inset 4px 4px 0 var(--slate-hi),
+        inset -4px -4px 0 var(--slate-lo);
+    }
+
+    .control-button:focus-visible {
+      outline: 4px solid #ffffff;
+      outline-offset: 4px;
     }
 
     .message {
-      min-height: 28px;
-      margin: 18px 0 0;
-      color: #facc15;
-      font-weight: 800;
+      min-height: 46px;
+      margin: 24px 0 0;
+      color: var(--yellow);
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.7;
+      text-shadow: 0 3px 0 var(--ink);
+    }
+
+    .message.win {
+      animation: textBlink 0.55s steps(1, end) infinite;
     }
 
     .help {
-      margin: 8px 0 0;
-      color: #64748b;
-      font-size: 13px;
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.7;
     }
 
-    @media (max-width: 420px) {
+    @keyframes tileBlink {
+      50% {
+        background: var(--tile-glow);
+      }
+    }
+
+    @keyframes textBlink {
+      50% {
+        color: #ffffff;
+      }
+    }
+
+    @keyframes frameFlash {
+      50% {
+        border-color: var(--yellow);
+      }
+    }
+
+    @media (max-width: 430px) {
       body {
-        padding: 12px;
+        padding: 14px 10px 28px;
       }
 
       .game-container {
-        padding: 18px;
-        border-radius: 18px;
+        padding: 16px 12px 20px;
+        border-width: 5px;
       }
 
       .board {
-        gap: 6px;
-        padding: 8px;
+        gap: 7px;
+        padding: 9px;
+      }
+
+      .tile {
+        border-width: 3px;
+        box-shadow:
+          inset 4px 4px 0 var(--tile-hi),
+          inset -4px -4px 0 var(--tile-lo),
+          0 4px 0 var(--tile-lo),
+          0 4px 0 3px var(--ink);
+      }
+
+      .tile:active {
+        transform: translateY(4px);
+        box-shadow:
+          inset 4px 4px 0 var(--tile-hi),
+          inset -4px -4px 0 var(--tile-lo);
+      }
+
+      .tile.empty {
+        box-shadow:
+          inset 4px 4px 0 var(--hole-lo),
+          inset -4px -4px 0 var(--hole-hi);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tile.movable,
+      .message.win,
+      .board.solved {
+        animation: none;
+      }
+
+      .tile.movable {
+        background: var(--tile-glow);
       }
     }
   </style>
@@ -278,6 +486,11 @@
       );
     }
 
+    function clearWinEffects() {
+      messageElement.classList.remove("win");
+      boardElement.classList.remove("solved");
+    }
+
     function moveTile(tileIndex) {
       if (gameWon) return;
 
@@ -298,6 +511,7 @@
       moves++;
       moveCountElement.textContent = moves;
       messageElement.textContent = "";
+      clearWinEffects();
 
       renderBoard();
 
@@ -370,6 +584,7 @@
       moveCountElement.textContent = "0";
       timerElement.textContent = "00:00";
       messageElement.textContent = "";
+      clearWinEffects();
 
       shuffleBoard();
       renderBoard();
@@ -387,6 +602,7 @@
       moveCountElement.textContent = "0";
       timerElement.textContent = "00:00";
       messageElement.textContent = "กระดานถูกเรียงเรียบร้อยแล้ว";
+      clearWinEffects();
 
       renderBoard();
     }
@@ -424,6 +640,8 @@
 
       messageElement.textContent =
         `สำเร็จ! คุณใช้ ${moves} ครั้ง เวลา ${formatTime(seconds)}`;
+      messageElement.classList.add("win");
+      boardElement.classList.add("solved");
     }
 
     function handleKeyboard(event) {
