@@ -8,46 +8,33 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Sans+Thai:wght@500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap"
     rel="stylesheet"
   >
 
   <style>
     :root {
-      --ink: #0b0a18;
-      --bg: #191048;
-      --bg-dither: rgba(255, 255, 255, 0.035);
+      --text: #f1f5fd;
+      --muted: #93a3c4;
 
-      --panel: #3b2f8f;
-      --panel-hi: #6a5cd4;
-      --panel-lo: #221a5c;
+      --tile-top: #62b6f8;
+      --tile-bottom: #2f6fe4;
+      --tile-edge: #1c4cab;
+      --tile-top-hover: #79c6ff;
+      --tile-bottom-hover: #3b7ff0;
 
-      --hud: #14103a;
-      --hud-hi: rgba(255, 255, 255, 0.09);
-      --hud-lo: rgba(0, 0, 0, 0.55);
+      --green-top: #56d98a;
+      --green-bottom: #22a35d;
+      --green-edge: #167943;
 
-      --board: #100c30;
-      --hole: #0a0820;
-      --hole-hi: #211c52;
-      --hole-lo: #040310;
+      --slate-top: #7e8cae;
+      --slate-bottom: #4e5b7c;
+      --slate-edge: #333e59;
 
-      --tile: #f5b73d;
-      --tile-hover: #ffc95f;
-      --tile-glow: #ffd97a;
-      --tile-hi: #ffe2a8;
-      --tile-lo: #9c560a;
-
-      --green: #4ad14a;
-      --green-hi: #a8f0a0;
-      --green-lo: #1c7a2a;
-
-      --slate: #6d6aa8;
-      --slate-hi: #a9a6d8;
-      --slate-lo: #363463;
-
-      --yellow: #ffd93d;
-      --muted: #a9a4dd;
-      --lift: 6px;
+      --amber: #ffd479;
+      --radius-tile: 15px;
+      --lift: 7px;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
     * {
@@ -57,328 +44,390 @@
     body {
       min-height: 100vh;
       margin: 0;
-      padding: 28px 20px 40px;
+      padding: 40px 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
-      font-family: "Press Start 2P", "IBM Plex Sans Thai", monospace;
-      line-height: 1.9;
-      background-color: var(--bg);
+      color: var(--text);
+      font-family: "Plus Jakarta Sans", "IBM Plex Sans Thai", system-ui, sans-serif;
+      background-color: #0c1220;
       background-image:
-        repeating-linear-gradient(
-          0deg,
-          var(--bg-dither) 0 4px,
-          transparent 4px 8px
+        radial-gradient(
+          70% 55% at 22% 8%,
+          rgba(88, 140, 255, 0.28) 0%,
+          transparent 70%
         ),
-        repeating-linear-gradient(
-          90deg,
-          var(--bg-dither) 0 4px,
-          transparent 4px 8px
-        );
-    }
-
-    /* เส้นสแกนจอ CRT */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 9;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.16) 0 2px,
-        transparent 2px 4px
-      );
+        radial-gradient(
+          60% 50% at 88% 96%,
+          rgba(139, 92, 246, 0.22) 0%,
+          transparent 72%
+        ),
+        linear-gradient(170deg, #121b31 0%, #0a0f1c 100%);
+      background-attachment: fixed;
     }
 
     .game-container {
-      width: min(100%, 470px);
-      padding: 22px 20px 26px;
+      width: min(100%, 480px);
+      padding: 30px 28px 32px;
       text-align: center;
-      background: var(--panel);
-      border: 6px solid var(--ink);
+      background: linear-gradient(
+        165deg,
+        rgba(255, 255, 255, 0.09),
+        rgba(255, 255, 255, 0.03)
+      );
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 30px;
       box-shadow:
-        inset 6px 6px 0 var(--panel-hi),
-        inset -6px -6px 0 var(--panel-lo),
-        0 14px 0 var(--panel-lo),
-        0 14px 0 6px var(--ink);
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 32px 70px rgba(4, 8, 20, 0.6);
     }
 
     h1 {
-      margin: 6px 0 14px;
-      color: var(--yellow);
-      font-size: clamp(15px, 5vw, 24px);
-      line-height: 1.5;
-      letter-spacing: 1px;
-      text-shadow:
-        3px 0 var(--ink),
-        -3px 0 var(--ink),
-        0 -3px var(--ink),
-        3px 3px var(--ink),
-        -3px 3px var(--ink),
-        0 6px 0 #c47a00,
-        0 9px 0 var(--ink);
+      margin: 0 0 6px;
+      font-size: clamp(25px, 6.5vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      background: linear-gradient(180deg, #ffffff, #b9cdf5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
-      margin: 0 0 20px;
+      margin: 0 0 24px;
       color: var(--muted);
       font-family: "IBM Plex Sans Thai", sans-serif;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 14.5px;
+      line-height: 1.7;
     }
 
     .status {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 14px;
+      margin-bottom: 26px;
     }
 
     .status-box {
-      padding: 10px 8px 12px;
-      background: var(--hud);
-      border: 4px solid var(--ink);
-      box-shadow:
-        inset 4px 4px 0 var(--hud-lo),
-        inset -4px -4px 0 var(--hud-hi);
+      padding: 13px 10px 15px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.04),
+        rgba(0, 0, 0, 0.22)
+      );
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 17px;
+      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.35);
     }
 
     .status-label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       color: var(--muted);
       font-family: "IBM Plex Sans Thai", sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.4;
+      font-size: 12.5px;
+      line-height: 1.5;
     }
 
     .status-value {
       display: block;
-      color: var(--yellow);
-      font-size: clamp(15px, 4.6vw, 20px);
-      line-height: 1.2;
-      text-shadow: 0 3px 0 var(--ink);
+      font-size: 25px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.5px;
+    }
+
+    /* เวทีสำหรับมุมมอง 3 มิติของกระดาน */
+    .board-stage {
+      perspective: 1300px;
+      perspective-origin: 50% 40%;
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 12px;
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       aspect-ratio: 1;
-      background: var(--board);
-      border: 5px solid var(--ink);
+      background: linear-gradient(180deg, #0a1120, #070c17);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 24px;
       box-shadow:
-        inset 5px 5px 0 rgba(0, 0, 0, 0.6),
-        inset -5px -5px 0 rgba(255, 255, 255, 0.06);
+        inset 0 6px 18px rgba(0, 0, 0, 0.7),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+        0 22px 40px rgba(3, 7, 16, 0.5);
+      transform: rotateX(9deg);
+      transform-style: preserve-3d;
+      transition: box-shadow 0.5s var(--ease);
     }
 
     .board.solved {
-      animation: frameFlash 0.5s steps(1, end) 6;
+      box-shadow:
+        inset 0 6px 18px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 212, 121, 0.5),
+        0 0 46px rgba(255, 196, 84, 0.34),
+        0 22px 40px rgba(3, 7, 16, 0.5);
     }
 
     .tile {
+      position: relative;
       padding: 0;
+      border: 0;
+      border-radius: var(--radius-tile);
       color: #ffffff;
-      background: var(--tile);
-      border: 4px solid var(--ink);
-      border-radius: 0;
+      background: linear-gradient(
+        168deg,
+        var(--tile-top),
+        var(--tile-bottom)
+      );
       box-shadow:
-        inset 5px 5px 0 var(--tile-hi),
-        inset -5px -5px 0 var(--tile-lo),
-        0 var(--lift) 0 var(--tile-lo),
-        0 var(--lift) 0 4px var(--ink);
-      font-family: inherit;
-      font-size: clamp(13px, 4.2vw, 22px);
+        inset 0 2px 1px rgba(255, 255, 255, 0.55),
+        inset 0 -8px 14px rgba(12, 32, 78, 0.4),
+        0 var(--lift) 0 var(--tile-edge),
+        0 calc(var(--lift) + 5px) 16px rgba(6, 18, 48, 0.55);
+      font: inherit;
+      font-size: clamp(23px, 7vw, 34px);
+      font-weight: 700;
       line-height: 1;
-      text-shadow: 0 3px 0 var(--tile-lo);
+      text-shadow: 0 2px 3px rgba(10, 32, 80, 0.45);
       cursor: pointer;
       user-select: none;
       touch-action: manipulation;
+      transition:
+        transform 0.17s var(--ease),
+        box-shadow 0.17s var(--ease),
+        background 0.17s var(--ease);
+    }
+
+    /* แถบแสงสะท้อนด้านบนของบล็อก */
+    .tile::before {
+      content: "";
+      position: absolute;
+      inset: 2px 3px auto;
+      height: 42%;
+      border-radius: calc(var(--radius-tile) - 3px)
+        calc(var(--radius-tile) - 3px) 40% 40%;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.32),
+        rgba(255, 255, 255, 0)
+      );
+      pointer-events: none;
     }
 
     .tile:hover {
-      background: var(--tile-hover);
+      background: linear-gradient(
+        168deg,
+        var(--tile-top-hover),
+        var(--tile-bottom-hover)
+      );
+      transform: translateY(-3px);
+      box-shadow:
+        inset 0 2px 1px rgba(255, 255, 255, 0.6),
+        inset 0 -8px 14px rgba(12, 32, 78, 0.4),
+        0 calc(var(--lift) + 3px) 0 var(--tile-edge),
+        0 calc(var(--lift) + 10px) 22px rgba(6, 18, 48, 0.6);
     }
 
-    /* กดแล้วบล็อกจมลงไปจริง */
+    /* กดแล้วบล็อกยุบลงบนฐาน */
     .tile:active {
       transform: translateY(var(--lift));
       box-shadow:
-        inset 5px 5px 0 var(--tile-hi),
-        inset -5px -5px 0 var(--tile-lo);
+        inset 0 2px 1px rgba(255, 255, 255, 0.4),
+        inset 0 -6px 12px rgba(12, 32, 78, 0.45),
+        0 1px 0 var(--tile-edge),
+        0 2px 5px rgba(6, 18, 48, 0.5);
     }
 
     .tile:focus-visible {
-      outline: 4px solid #ffffff;
+      outline: 2px solid rgba(255, 255, 255, 0.85);
       outline-offset: 3px;
     }
 
     .tile.movable {
-      animation: tileBlink 0.9s steps(1, end) infinite;
+      animation: glow 2.6s ease-in-out infinite;
     }
 
     /* ช่องว่าง = หลุมจมลงในกระดาน */
     .tile.empty {
       pointer-events: none;
-      background: var(--hole);
+      background: #060a14;
       box-shadow:
-        inset 5px 5px 0 var(--hole-lo),
-        inset -5px -5px 0 var(--hole-hi);
+        inset 0 5px 12px rgba(0, 0, 0, 0.85),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
       animation: none;
+    }
+
+    .tile.empty::before {
+      display: none;
     }
 
     .controls {
       display: flex;
-      gap: 12px;
-      margin-top: 22px;
+      gap: 14px;
+      margin-top: 28px;
     }
 
     .control-button {
       flex: 1;
-      padding: 12px 8px 14px;
+      padding: 14px 10px 15px;
+      border: 0;
+      border-radius: 16px;
       color: #ffffff;
-      background: var(--green);
-      border: 4px solid var(--ink);
-      border-radius: 0;
+      background: linear-gradient(
+        168deg,
+        var(--green-top),
+        var(--green-bottom)
+      );
       box-shadow:
-        inset 4px 4px 0 var(--green-hi),
-        inset -4px -4px 0 var(--green-lo),
-        0 var(--lift) 0 var(--green-lo),
-        0 var(--lift) 0 4px var(--ink);
+        inset 0 2px 1px rgba(255, 255, 255, 0.45),
+        0 5px 0 var(--green-edge),
+        0 9px 18px rgba(8, 40, 24, 0.45);
       font-family: "IBM Plex Sans Thai", sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.4;
-      text-shadow: 0 2px 0 var(--green-lo);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.6;
+      text-shadow: 0 1px 2px rgba(8, 44, 26, 0.4);
       cursor: pointer;
+      transition:
+        transform 0.17s var(--ease),
+        box-shadow 0.17s var(--ease),
+        filter 0.17s var(--ease);
     }
 
     .control-button.secondary {
-      background: var(--slate);
+      background: linear-gradient(
+        168deg,
+        var(--slate-top),
+        var(--slate-bottom)
+      );
       box-shadow:
-        inset 4px 4px 0 var(--slate-hi),
-        inset -4px -4px 0 var(--slate-lo),
-        0 var(--lift) 0 var(--slate-lo),
-        0 var(--lift) 0 4px var(--ink);
-      text-shadow: 0 2px 0 var(--slate-lo);
+        inset 0 2px 1px rgba(255, 255, 255, 0.35),
+        0 5px 0 var(--slate-edge),
+        0 9px 18px rgba(10, 16, 32, 0.45);
     }
 
     .control-button:hover {
-      filter: brightness(1.12);
+      filter: brightness(1.07);
+      transform: translateY(-2px);
+      box-shadow:
+        inset 0 2px 1px rgba(255, 255, 255, 0.5),
+        0 7px 0 var(--green-edge),
+        0 13px 24px rgba(8, 40, 24, 0.5);
+    }
+
+    .control-button.secondary:hover {
+      box-shadow:
+        inset 0 2px 1px rgba(255, 255, 255, 0.4),
+        0 7px 0 var(--slate-edge),
+        0 13px 24px rgba(10, 16, 32, 0.5);
     }
 
     .control-button:active {
-      transform: translateY(var(--lift));
+      transform: translateY(5px);
       box-shadow:
-        inset 4px 4px 0 var(--green-hi),
-        inset -4px -4px 0 var(--green-lo);
+        inset 0 2px 1px rgba(255, 255, 255, 0.35),
+        0 0 0 var(--green-edge),
+        0 2px 6px rgba(8, 40, 24, 0.4);
     }
 
     .control-button.secondary:active {
       box-shadow:
-        inset 4px 4px 0 var(--slate-hi),
-        inset -4px -4px 0 var(--slate-lo);
+        inset 0 2px 1px rgba(255, 255, 255, 0.3),
+        0 0 0 var(--slate-edge),
+        0 2px 6px rgba(10, 16, 32, 0.4);
     }
 
     .control-button:focus-visible {
-      outline: 4px solid #ffffff;
-      outline-offset: 4px;
+      outline: 2px solid rgba(255, 255, 255, 0.85);
+      outline-offset: 3px;
     }
 
     .message {
-      min-height: 46px;
+      min-height: 30px;
       margin: 24px 0 0;
-      color: var(--yellow);
+      color: var(--amber);
       font-family: "IBM Plex Sans Thai", sans-serif;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 15.5px;
+      font-weight: 600;
       line-height: 1.7;
-      text-shadow: 0 3px 0 var(--ink);
     }
 
     .message.win {
-      animation: textBlink 0.55s steps(1, end) infinite;
+      animation: rise 0.45s var(--ease);
+      text-shadow: 0 0 20px rgba(255, 196, 84, 0.55);
     }
 
     .help {
-      margin: 4px 0 0;
-      color: var(--muted);
+      margin: 8px 0 0;
+      color: #6f7d9c;
       font-family: "IBM Plex Sans Thai", sans-serif;
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 12.5px;
       line-height: 1.7;
     }
 
-    @keyframes tileBlink {
+    /* เรืองแสงช้าๆ บอกช่องที่เลื่อนได้ */
+    @keyframes glow {
+      0%, 100% {
+        box-shadow:
+          inset 0 2px 1px rgba(255, 255, 255, 0.55),
+          inset 0 -8px 14px rgba(12, 32, 78, 0.4),
+          0 var(--lift) 0 var(--tile-edge),
+          0 calc(var(--lift) + 5px) 16px rgba(6, 18, 48, 0.55);
+      }
       50% {
-        background: var(--tile-glow);
+        box-shadow:
+          inset 0 2px 1px rgba(255, 255, 255, 0.7),
+          inset 0 -8px 14px rgba(12, 32, 78, 0.4),
+          0 var(--lift) 0 var(--tile-edge),
+          0 calc(var(--lift) + 5px) 16px rgba(6, 18, 48, 0.55),
+          0 0 22px rgba(125, 211, 252, 0.45);
       }
     }
 
-    @keyframes textBlink {
-      50% {
-        color: #ffffff;
-      }
-    }
-
-    @keyframes frameFlash {
-      50% {
-        border-color: var(--yellow);
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
       }
     }
 
     @media (max-width: 430px) {
       body {
-        padding: 14px 10px 28px;
+        padding: 18px 12px 26px;
       }
 
       .game-container {
-        padding: 16px 12px 20px;
-        border-width: 5px;
+        padding: 22px 16px 24px;
+        border-radius: 24px;
       }
 
       .board {
-        gap: 7px;
-        padding: 9px;
+        gap: 9px;
+        padding: 10px;
+        border-radius: 19px;
       }
 
       .tile {
-        border-width: 3px;
-        box-shadow:
-          inset 4px 4px 0 var(--tile-hi),
-          inset -4px -4px 0 var(--tile-lo),
-          0 4px 0 var(--tile-lo),
-          0 4px 0 3px var(--ink);
-      }
-
-      .tile:active {
-        transform: translateY(4px);
-        box-shadow:
-          inset 4px 4px 0 var(--tile-hi),
-          inset -4px -4px 0 var(--tile-lo);
-      }
-
-      .tile.empty {
-        box-shadow:
-          inset 4px 4px 0 var(--hole-lo),
-          inset -4px -4px 0 var(--hole-hi);
+        --radius-tile: 12px;
+        --lift: 5px;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .tile.movable,
-      .message.win,
-      .board.solved {
+      .message.win {
         animation: none;
       }
 
       .tile.movable {
-        background: var(--tile-glow);
+        box-shadow:
+          inset 0 2px 1px rgba(255, 255, 255, 0.7),
+          inset 0 -8px 14px rgba(12, 32, 78, 0.4),
+          0 var(--lift) 0 var(--tile-edge),
+          0 calc(var(--lift) + 5px) 16px rgba(6, 18, 48, 0.55),
+          0 0 20px rgba(125, 211, 252, 0.4);
       }
     }
   </style>
@@ -401,11 +450,13 @@
       </div>
     </section>
 
-    <section
-      class="board"
-      id="board"
-      aria-label="กระดานเกม"
-    ></section>
+    <div class="board-stage">
+      <section
+        class="board"
+        id="board"
+        aria-label="กระดานเกม"
+      ></section>
+    </div>
 
     <div class="controls">
       <button class="control-button" id="newGameButton" type="button">
