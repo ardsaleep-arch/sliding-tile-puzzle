@@ -169,17 +169,6 @@
       background: var(--tile-hover);
     }
 
-    .tile.movable {
-      color: var(--accent-text);
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .tile.movable:hover {
-      background: var(--accent-hover);
-      border-color: var(--accent-hover);
-    }
-
     .tile:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
@@ -358,10 +347,6 @@
 
         tile.textContent = isEmpty ? "" : String(number);
         tile.classList.toggle("empty", isEmpty);
-        tile.classList.toggle(
-          "movable",
-          !isEmpty && isAdjacent(index, emptyIndex)
-        );
         tile.disabled = isEmpty;
         tile.setAttribute(
           "aria-label",
